@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Offline Company Research Assistant – No API Key Needed</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e5e7eb;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 16px;
+    }
+    header {
+        background: linear-gradient(135deg, #1f2937, #020617);
+        padding: 16px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .chat {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr;
+        gap: 16px;
+    }
+    #chatWindow {
+        height: 65vh;
+        overflow-y: auto;
+        border: 1px solid #1e293b;
+        background: #020617;
+        border-radius: 16px;
+        padding: 12px;
+    }
+    .bubble {
+        padding: 10px;
+        display: inline-block;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        max-width: 80%;
+    }
+    .user { text-align: right; }
+    .user .bubble {
+        background: #2563eb;
+        color: white;
+    }
+    .bot .bubble {
+        background: #1e293b;
+    }
+    #inputRow {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+    input,select {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 12px;
+        background: #1e293b;
+        color: white;
+    }
+    button {
+        padding: 10px 16px;
+        border-radius: 12px;
+        border: none;
+        background: #2563eb;
+        color: white;
+    }
+    #micBtn.listen {
+        background: #ef4444;
+    }
+    #planPanel {
+        background: #020617;
+        border: 1px solid #1e293b;
+        border-radius: 16px;
+        padding: 16px;
+        height: 65vh;
+        overflow-y: auto;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h2>Company Research Assistant 🌐 (Offline Mode)</h2>
+            <p>Chat + Voice • No API Key • No Internet Needed</p>
+        </div>
+        <div>
+            <label>Persona:</label>
+            <select id="persona">
+                <option value="efficient">Efficient</option>
+                <option value="confused">Confused</option>
+                <option value="chatty">Chatty</option>
+                <option value="edge">Edge-case</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="chat">
+        <div>
+            <div id="chatWindow"></div>
+
+            <div id="inputRow">
+                <button id="micBtn">🎙️</button>
+                <input id="userInput" placeholder="Say or type: Research Google">
+                <button id="sendBtn">Send</button>
+            </div>
+        </div>
+
+        <div id="planPanel">
+            <h3>Account Plan</h3>
+            <div id="planContent"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ---------------------------------------
+// OFFLINE KNOWLEDGE BASE
+// ---------------------------------------
+const DATA = {
+    google: {
+        overview: "Google is a global leader in search, ads, cloud, Android, and AI.",
+        initiatives: ["AI-first strategy", "Cloud growth", "Search improvements"],
+        stakeholders: "CEO Sundar Pichai, VP Google Cloud, Product Directors",
+        tech: "Google Cloud, TensorFlow, Chrome, Search algorithms",
+        opportunities: ["Cloud adoption", "Workspace expansion", "AI consulting"],
+        risks: ["Regulation", "Competition from AWS/Azure"],
+        next: ["Schedule intro call", "Propose AI pilot", "Prepare cloud strategy deck"]
+    },
+    nike: {
+        overview: "Nike is the world’s largest sportswear and footwear company.",
+        initiatives: ["Digital retail expansion", "Sustainability focus", "Direct-to-consumer"],
+        stakeholders: "CEO John Donahoe, Digital Commerce VP, Retail Ops",
+        tech: "Nike app, E-commerce stack, Supply chain analytics",
+        opportunities: ["AI personalization", "Logistics optimization"],
+        risks: ["Inventory delays", "Global supply volatility"],
+        next: ["Connect with digital team", "Pitch retail automation", "Prepare case study"]
+    },
+    microsoft: {
+        overview: "Microsoft is a leader in cloud, productivity tools, and enterprise software.",
+        initiatives: ["Azure expansion", "AI Copilot integration"],
+        stakeholders: "CEO Satya Nadella, Azure CTO, Enterprise Sales VP",
+        tech: "Azure, Windows, GitHub, Office 365",
+        opportunities: ["AI modernization", "Cloud migration"],
+        risks: ["AWS competition", "Legacy workload challenges"],
+        next: ["Reach out to Azure sales", "Prepare modernization proposal"]
+    }
+};
+
+// ---------------------------------------
+// BOT MEMORY
+// ---------------------------------------
+let mode = "discovery";
+let company = null;
+let accountPlan = {};
+
+// ---------------------------------------
+function addMessage(role, text) {
+    const chat = document.getElementById("chatWindow");
+    const div = document.createElement("div");
+    div.className = role;
+    div.innerHTML = `<div class="bubble">${text.replace(/\n/g,"<br>")}</div>`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+// ---------------------------------------
+function speak(text) {
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+// ---------------------------------------
+// OFFLINE "AI" ENGINE
+// ---------------------------------------
+function researchCompany(c) {
+    const data = DATA[c] || {
+        overview: `${c} is a company operating in multiple business areas.`,
+        initiatives: ["AI adoption", "Digital expansion"],
+        stakeholders: "CEO, CTO, VP Engineering",
+        tech: "Cloud tools, CRM, Analytics",
+        opportunities: ["Tech modernization", "Cloud migration"],
+        risks: ["Competition", "Scaling issues"],
+        next: ["Discovery workshop", "Pitch deck"]
+    };
+
+    return `
+Step 1: Company Overview  
+→ ${data.overview}
+
+Step 2: Key Initiatives  
+→ ${data.initiatives.join(", ")}
+
+Step 3: Stakeholders  
+→ ${data.stakeholders}
+
+Step 4: Tech Landscape  
+→ ${data.tech}
+
+Step 5: Opportunities  
+→ ${data.opportunities.join(", ")}
+
+Step 6: Risks  
+→ ${data.risks.join(", ")}
+
+Research complete. Say "generate plan".
+`;
+}
+
+function generatePlan(c) {
+    const d = DATA[c] || DATA["default"];
+    return {
+        company_overview: d.overview,
+        key_initiatives: d.initiatives.join("\n• "),
+        org_map_and_stakeholders: d.stakeholders,
+        current_tech_landscape: d.tech,
+        opportunities_for_us: d.opportunities.join("\n• "),
+        risks_and_red_flags: d.risks.join("\n• "),
+        next_steps: d.next.join("\n• ")
+    };
+}
+
+function renderPlan() {
+    let html = "";
+    for (let key in accountPlan) {
+        html += `<h4>${key.replace(/_/g," ")}</h4><p>${accountPlan[key]}</p><hr>`;
+    }
+    document.getElementById("planContent").innerHTML = html;
+}
+
+// ---------------------------------------
+// MAIN HANDLER
+// ---------------------------------------
+function processMessage(msg) {
+    msg = msg.toLowerCase();
+
+    if (mode === "discovery") {
+        company = msg.split(" ")[1] || msg;
+        mode = "research";
+        return `Researching **${company}**...`;
+    }
+
+    if (mode === "research") {
+        mode = "planning";
+        return researchCompany(company);
+    }
+
+    if (mode === "planning") {
+        if (msg.includes("generate")) {
+            accountPlan = generatePlan(company);
+            renderPlan();
+            mode = "editing";
+            return "Here is the generated account plan! You may edit any section now.";
+        }
+        return "Say 'generate plan' to proceed.";
+    }
+
+    if (mode === "editing") {
+        return "Editing support (offline) is limited. But the plan is ready!";
+    }
+
+    return "I didn't understand that.";
+}
+
+// ---------------------------------------
+// SEND MESSAGE
+// ---------------------------------------
+document.getElementById("sendBtn").onclick = () => {
+    const text = document.getElementById("userInput").value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    const reply = processMessage(text);
+    addMessage("bot", reply);
+    speak(reply);
+    document.getElementById("userInput").value = "";
+};
+
+// ---------------------------------------
+// MIC INPUT
+// ---------------------------------------
+let recognition = null;
+if ("webkitSpeechRecognition" in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = "en-US";
+
+    recognition.onstart = () =>
+        document.getElementById("micBtn").classList.add("listen");
+    recognition.onend = () =>
+        document.getElementById("micBtn").classList.remove("listen");
+
+    recognition.onresult = e => {
+        document.getElementById("userInput").value =
+            e.results[0][0].transcript;
+        document.getElementById("sendBtn").click();
+    };
+}
+
+document.getElementById("micBtn").onclick = () => {
+    if (!recognition) return alert("Speech not supported!");
+    recognition.start();
+};
+
+// ---------------------------------------
+addMessage("bot", "Hello 👋 I am your offline Company Research Assistant! Tell me a company to begin.");
+</script>
+
+</body>
+</html>

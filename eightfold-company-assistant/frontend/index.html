@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Company Research Assistant – Account Planner</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div>
+        <h1>Company Research Assistant</h1>
+        <p>Account plan generator with chat & voice</p>
+      </div>
+      <div class="persona-selector">
+        <label for="persona">Persona:</label>
+        <select id="persona">
+          <option value="efficient">Efficient (short & crisp)</option>
+          <option value="confused">Confused (more guidance)</option>
+          <option value="chatty">Chatty (friendly)</option>
+          <option value="edge">Edge-case tester</option>
+        </select>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="chat-section">
+        <div id="chat-window" class="chat-window"></div>
+        <div class="input-row">
+          <button id="mic-btn" class="icon-btn" title="Speak">
+            🎙️
+          </button>
+          <input
+            id="user-input"
+            type="text"
+            placeholder="Type or use the mic… e.g. “Research Zeta company and generate an account plan”"
+          />
+          <button id="send-btn" class="primary-btn">Send</button>
+        </div>
+        <div class="options-row">
+          <label>
+            <input type="checkbox" id="voice-output" checked />
+            Read replies aloud
+          </label>
+          <small>Session ID: <span id="session-id"></span></small>
+        </div>
+      </section>
+
+      <aside class="plan-section">
+        <h2>Current Account Plan</h2>
+        <div id="plan-content" class="plan-content">
+          <p class="placeholder">
+            I’ll show the structured account plan here once it’s generated.
+          </p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
