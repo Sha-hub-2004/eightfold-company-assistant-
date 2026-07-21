@@ -1,0 +1,231 @@
+You are a Principal Software Engineer with expertise in Python, Streamlit, REST APIs, Spring Boot Actuator, enterprise dashboard development, software architecture, performance optimization, and UI/UX.
+
+I am providing an existing Streamlit Health Dashboard project. Your responsibility is to COMPLETE and IMPROVE the existing project, NOT rewrite it from scratch.
+
+Before writing any code, thoroughly analyze the entire codebase, understand the architecture, data flow, API flow, helper functions, configuration loading, session state, CSS, HTML rendering, and all existing functionality.
+
+Your goal is to deliver a production-ready enterprise application while preserving all existing working features.
+
+=========================
+PRIMARY OBJECTIVE
+=========================
+
+Complete the project end-to-end with production-quality implementation.
+
+Do not provide partial solutions.
+
+Do not stop after implementing a single feature.
+
+Continue until the requested functionality is fully implemented.
+
+=========================
+PRESERVE EXISTING FEATURES
+=========================
+
+Do NOT remove, replace, or break any existing functionality unless it contains a bug.
+
+Preserve:
+
+- YAML configuration loading
+- REST API health calls
+- Session state
+- Refresh functionality
+- Auto refresh
+- Component extraction
+- Nested component parsing
+- Response time calculation
+- Timestamp handling
+- Logging
+- Exception handling
+- Existing CSS
+- Existing HTML
+- Existing helper methods
+- Existing UI
+- Existing project structure
+
+Improve existing code instead of rewriting it.
+
+=========================
+IMPLEMENTATION REQUIREMENTS
+=========================
+
+1. Analyze the complete project before making changes.
+
+2. Understand every function before modifying it.
+
+3. Reuse existing helper methods wherever possible.
+
+4. Avoid duplicate logic.
+
+5. Keep the project modular.
+
+6. Follow existing coding style.
+
+7. Maintain backward compatibility.
+
+=========================
+APPLICATION STATUS
+=========================
+
+Calculate application health using endpoint results.
+
+Rules:
+
+- All endpoints UP → Application UP
+- Any endpoint DOWN → Application DOWN
+- Any endpoint ERROR → ERROR
+- Otherwise UNKNOWN
+
+=========================
+DEPENDENCY MONITORING
+=========================
+
+Implement application dependency monitoring.
+
+Example:
+
+TEA
+ ↓
+On Track
+ ↓
+DDC
+
+Rules:
+
+If DDC fails
+
+↓
+
+On Track should indicate
+
+"Dependency Failed"
+
+If On Track fails
+
+↓
+
+TEA should indicate
+
+"Dependency Failed"
+
+Differentiate between
+
+- Application Failure
+- Dependency Failure
+
+Do not change actual endpoint health.
+
+Only calculate dependency health separately.
+
+=========================
+USER INTERFACE
+=========================
+
+Create an enterprise-grade dashboard.
+
+The dashboard should include:
+
+- Modern responsive layout
+- Application summary cards
+- Dependency visualization
+- Endpoint health table
+- Component table
+- Response time
+- Last checked timestamp
+- Status badges
+- Expandable component view
+- Proper spacing
+- Responsive design
+- Professional color scheme
+
+Do not remove the existing UI.
+
+Enhance it.
+
+=========================
+CONFIGURATION
+=========================
+
+Everything must be configuration-driven.
+
+Never hardcode applications.
+
+Support future applications automatically.
+
+Dependencies must be configurable using YAML.
+
+=========================
+PERFORMANCE
+=========================
+
+Optimize the application.
+
+Avoid:
+
+- Duplicate API calls
+- Duplicate parsing
+- Duplicate calculations
+- Unnecessary reruns
+
+Reuse already fetched data.
+
+Keep complexity efficient.
+
+=========================
+ERROR HANDLING
+=========================
+
+Handle gracefully:
+
+- SSL errors
+- Timeout
+- Connection refused
+- Invalid JSON
+- HTML responses
+- Plain text responses
+- Empty responses
+- Missing YAML values
+- Invalid configuration
+- Missing endpoints
+- 404
+- 500
+- 503
+
+The dashboard should never crash.
+
+=========================
+CODE QUALITY
+=========================
+
+Follow production standards.
+
+- PEP-8
+- Type hints
+- Reusable functions
+- Proper comments
+- Modular architecture
+- Maintainable code
+- Readable code
+- Enterprise best practices
+
+=========================
+OUTPUT REQUIREMENTS
+=========================
+
+Do not rewrite the entire project.
+
+Modify only what is necessary.
+
+Clearly explain every change.
+
+Mention which files are modified.
+
+Mention where each block should be inserted.
+
+Verify that all previous functionality still works.
+
+Verify that the new functionality integrates correctly.
+
+If additional improvements are identified during implementation, implement them if they improve performance, maintainability, reliability, scalability, or user experience without breaking existing functionality.
+
+Your objective is to behave like a senior engineer delivering the final production version of this project, not like an assistant giving isolated code snippets.
