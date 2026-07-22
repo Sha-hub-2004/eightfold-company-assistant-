@@ -1,0 +1,80 @@
+def render_application_flow(cfg, env):
+
+    apps = list(cfg.applications.keys())
+
+    html = """
+    <div style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:45px;
+        margin:40px 0;
+        flex-wrap:wrap;
+    ">
+    """
+
+    for i, app in enumerate(apps):
+
+        state = get_application_status(app, env, cfg)
+
+        if state == "UP":
+            color = "#28a745"
+            icon = "🟢"
+        elif state == "DOWN":
+            color = "#dc3545"
+            icon = "🔴"
+        elif state == "UNKNOWN":
+            color = "#ffc107"
+            icon = "🟡"
+        else:
+            color = "#6c757d"
+            icon = "⚪"
+
+        html += f"""
+        <div style="
+            width:240px;
+            height:130px;
+            border:4px solid {color};
+            border-radius:15px;
+            background:{color}20;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        ">
+            <div style="font-size:38px;">{icon}</div>
+
+            <div style="
+                font-size:28px;
+                font-weight:bold;
+                color:{color};
+                margin-top:8px;
+            ">
+                {app}
+            </div>
+
+            <div style="
+                font-size:18px;
+                color:#555;
+                margin-top:6px;
+            ">
+                {state}
+            </div>
+        </div>
+        """
+
+        if i != len(apps)-1:
+            html += """
+            <div style="
+                font-size:65px;
+                font-weight:bold;
+                color:#444;
+            ">
+                ➜
+            </div>
+            """
+
+    html += "</div>"
+
+    st.markdown(html, unsafe_allow_html=True)
