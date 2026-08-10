@@ -1,0 +1,46 @@
+# ---------------------------------------------------------
+# User issue analysis
+# ---------------------------------------------------------
+user_issue_summary = (
+    df[
+        df["Requested For"].notna()
+        & df["Category"].notna()
+        & df["Sub Category"].notna()
+        & (df["Requested For"].astype(str).str.strip() != "")
+        & (df["Category"].astype(str).str.strip() != "")
+        & (df["Sub Category"].astype(str).str.strip() != "")
+    ]
+    .groupby(["Requested For", "Category", "Sub Category"])
+    .size()
+    .reset_index(name="Count")
+    .sort_values(
+        ["Count", "Requested For"],
+        ascending=[False, True]
+    )
+)
+
+dashboard["user_issue_summary"] = user_issue_summary
+
+
+# ---------------------------------------------------------
+# Champion issue analysis
+# ---------------------------------------------------------
+champion_issue_summary = (
+    df[
+        df["Champion"].notna()
+        & df["Category"].notna()
+        & df["Sub Category"].notna()
+        & (df["Champion"].astype(str).str.strip() != "")
+        & (df["Category"].astype(str).str.strip() != "")
+        & (df["Sub Category"].astype(str).str.strip() != "")
+    ]
+    .groupby(["Champion", "Category", "Sub Category"])
+    .size()
+    .reset_index(name="Count")
+    .sort_values(
+        ["Count", "Champion"],
+        ascending=[False, True]
+    )
+)
+
+dashboard["champion_issue_summary"] = champion_issue_summary
