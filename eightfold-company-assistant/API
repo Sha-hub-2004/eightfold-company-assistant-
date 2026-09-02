@@ -1,0 +1,81 @@
+def get_access_token(session: requests.Session) -> str:
+    """
+    Obtain OAuth2 access token using the same configuration as the working curl command.
+    """
+
+    logger.info("Requesting OAuth access token...")
+
+    try:
+        response = session.post(
+            TOKEN_URL,
+
+            # grant_type=client_credentials
+            params={
+                "grant_type": "client_credentials"
+            },
+
+            # Same mTLS configuration as curl
+            cert=(CLIENT_CERT, CLIENT_KEY),
+
+            # Same as curl -u CLIENT_ID:CLIENT_SECRET
+            auth=(CLIENT_ID, CLIENT_SECRET),
+
+            # Same as curl: -H "Content-Length: 0"
+            headers={
+                "Content-Length": "0"
+            },
+
+            # Empty body
+            data=b"",
+
+            verify=get_verify_setting(),
+
+            timeout=(CONNECT_TIMEOUT, READ_TIMEOUT),
+        )
+
+    except requests.exceptions.SSLError as exc:
+        raise RuntimeError(
+            f"SSL/mTLS error while obtaining token: {exc}"
+        ) from exc
+
+    except requests.exceptions.Timeout as exc:
+        raise RuntimeError(
+            "Token request timed out."
+        ) from exc
+
+    except requests.exceptions.RequestException as exc:
+        raise RuntimeError(
+            f"Token request failed: {exc}"
+        ) from exc
+
+    if response.status_code != 200:
+        raise RuntimeError(
+            f"Token request failed. "
+            f"HTTP {response.status_code}: "
+            f"{response.text[:500]}"
+        )
+
+    try:
+        token_data = response.json()
+    except ValueError as exc:
+        raise RuntimeError(
+            "Token API returned a non-JSON response."
+        ) from exc
+
+    access_token = token_data.get("access_token")
+
+    if not access_token:
+        raise RuntimeError(
+            "Token API response does not contain 'access_token'."
+        )
+
+    logger.info(
+        "Token type: %s | Expires in: %s | Scope: %s",
+        token_data.get("token_type"),
+        token_data.get("expires_in"),
+        token_data.get("scope"),
+    )
+
+    logger.info("OAuth token obtained successfully.")
+
+    return access_token
